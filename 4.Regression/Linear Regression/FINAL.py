@@ -5,6 +5,7 @@
 # 1. Import required libraries
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -46,16 +47,16 @@ for col in num_cols:
 for col in cat_cols:
     df[col].fillna(df[col].mode()[0], inplace=True)
 
-# Outlier removal using IQR method
-for col in num_cols:
-    Q1 = df[col].quantile(0.25)
-    Q3 = df[col].quantile(0.75)
-    IQR = Q3 - Q1
+# # Outlier removal using IQR method
+# for col in num_cols:
+#     Q1 = df[col].quantile(0.25)
+#     Q3 = df[col].quantile(0.75)
+#     IQR = Q3 - Q1
 
-    lower = Q1 - 1.5 * IQR
-    upper = Q3 + 1.5 * IQR
+#     lower = Q1 - 1.5 * IQR
+#     upper = Q3 + 1.5 * IQR
 
-    df = df[(df[col] >= lower) & (df[col] <= upper)]
+#     df = df[(df[col] >= lower) & (df[col] <= upper)]
 
 # =========================================
 # 5. Encode Categorical Data (Label Encoding)
@@ -102,3 +103,34 @@ y_pred = mlr.predict(X_test)
 r2 = r2_score(y_test, y_pred)
 print("R² Score:", r2)
 print("Model Accuracy:", r2 * 100, "%")
+
+# =========================================
+# 12. ACTUAL vs PREDICTED GRAPH
+# =========================================
+
+plt.figure(figsize=(6, 4))
+plt.scatter(y_test, y_pred, color='blue')
+plt.plot(
+    [y_test.min(), y_test.max()],
+    [y_test.min(), y_test.max()],
+    color='red'
+)
+plt.xlabel("Actual Target Values")
+plt.ylabel("Predicted Target Values")
+plt.title("Actual vs Predicted (Best Fit Line)")
+plt.show()
+
+# # =========================================
+# # 13. Predicting from model trained
+# # =========================================
+
+# Random_input = pd.DataFrame([[
+#     120000,   # R&D Spend
+#     50000,    # Administration
+#     30000,    # Marketing Spend
+#     1         # State (encoded value)
+# ]], columns=X.columns)
+
+# Random_input_scaled = scaler.transform(Random_input)
+# y_pred = mlr.predict(Random_input_scaled)
+# print("Predicted Output:", y_pred[0])
